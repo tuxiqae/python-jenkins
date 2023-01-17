@@ -1,0 +1,26 @@
+jenkins:
+  pipelines:
+    aurora-home-assignment:
+      script: 'merge.Jenkinsfile'
+      triggers:
+        - githubPush:
+            triggerOnPush: true
+            repository: git@github.com:tuxiqae/python-jenkins.git
+      agent:
+        node: 'python:3.9'
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: ${JENKINS_ADMIN_ID}
+         password: ${JENKINS_ADMIN_PASSWORD}
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "USER:Overall/Administer:admin"
+        - "GROUP:Overall/Read:authenticated"
+security:
+  queueItemAuthenticator:
+    authenticators:
+    - global:
+        strategy: triggeringUsersAuthorizationStrategy
